@@ -30,6 +30,7 @@ The script will scan for keys of the following format:
 | Poloniex | (([A-Z0-9]{8}\-){3})([A-Z0-9]{8}) | [a-f0-9]{128} |
 
 **Future:**  
+
 | Service Provider | Client ID | Secret Key |
 | ---------------- | --------- | ---------- |
 | Amazon AWS | AKIA[0-9A-Z]{16} |  [0-9a-zA-Z/+]{40} |
