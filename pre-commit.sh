@@ -11,15 +11,34 @@ STASH_NAME="pre-commit-$(date +%s)"
 git stash save -q --keep-index $STASH_NAME
 
 # Test prospective commit
-echo "\nChecking commit...\n"
-FORBIDDEN='[a-zA-Z0-9|$-\/|:-?|{-~|]{32}'
-EXCLUDE='.lock'
-COMMAND="git diff --cached --name-only | grep -v $EXCLUDE | GREP_COLOR='4;5;37;41' xargs grep --color --with-filename -n -iE $FORBIDDEN"
-FAIL_MESSAGE = "COMMIT REJECTED Found possible secret keys. Please remove them before committing or use --no-verify to ignore and commit anyway.\n If this helped you, consider donating Bitcoin to: 183J9CYci5Xbe3YXct1BHyRjyxH89QiUCc I had .25 BTC stolen :( just trying to earn it back ;)"
+GDAX_KEY="[a-f0-9]{32}"
+GDAX_SECRET="[a-zA-Z0-9=\/+]{88}"
+POLONIEX_KEY="(([A-Z0-9]{8}\-){3})([A-Z0-9]{8})"
+POLONIEX_SECRET="[a-f0-9]{128}"
+BITTREX_KEY="[a-f0-9]{32}"
+BITTREX_SECRET="[a-f0-9]{32}"
 
-if $($COMMAND); then
-  echo $FAIL_MESSAGE && exit 1
-fi
+FORBIDDEN_EXP=( $GDAX_KEY $GDAX_SECRET $POLONIEX_KEY $POLONIEX_SECRET $BITTREX_KEY $BITTREX_SECRET)
+
+EXCLUDE="'.lock'"
+COMMAND1="ls -p | grep -v '/$'"
+COMMAND2="grep -v $EXCLUDE"
+FAIL_MESSAGE="COMMIT REJECTED Found possible secret keys. Please remove them before committing or use --no-verify to ignore and commit anyway.\n If this helped you, consider donating Bitcoin to: 183J9CYci5Xbe3YXct1BHyRjyxH89QiUCc I had BTC stolen :( just trying to earn it back ;)"
+
+for expression in "${FORBIDDEN_EXP[@]}"
+do
+    :
+    output=$(ls -p | grep -v '/$' | GREP_COLOR='4;5;37;41' xargs grep --color --with-filename -n -iE $expression)
+
+    if [ $? -eq 0 ]
+    then
+        ls -p | grep -v '/$' | GREP_COLOR='4;5;37;41' xargs grep --color --with-filename -n -iE $expression
+        echo '\n' $FAIL_MESSAGE '\n' && exit 1
+    else
+        echo "No api keys detected"
+    fi
+    echo $output
+done
 
 STASHES=$(git stash list)
 if [[ $STASHES == "$STASH_NAME" ]]; then
