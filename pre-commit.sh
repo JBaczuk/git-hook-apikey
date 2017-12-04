@@ -34,10 +34,7 @@ do
     then
         ls -p | grep -v '/$' | GREP_COLOR='4;5;37;41' xargs grep --color --with-filename -n -iE $expression
         echo '\n' $FAIL_MESSAGE '\n' && exit 1
-    else
-        echo "No api keys detected"
     fi
-    echo $output
 done
 
 STASHES=$(git stash list)
