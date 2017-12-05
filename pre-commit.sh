@@ -7,6 +7,25 @@
 #
 # Use --no-verify to ignore
 
+## Installation
+### MacOS:
+
+# **Globally (all repos):**
+# - Find global git directory:  
+# `git config --list --show-origin`  
+# Check top line of output, should be similar to:  
+# `file:/Applications/Xcode.app/Contents/Developer/usr/share/git-core/gitconfig	credential.helper=osxkeychain`
+# - Create a global git hooks directory:  
+# `mkdir /Applications/Xcode.app/Contents/Developer/usr/share/git-core/hooks`
+# - Configure a global git hooks path:  
+# `git config --global core.hooksPath /Applications/Xcode.app/Contents/Developer/usr/share/git-core/hooks`
+# - Install api-key-hook file:  
+# `cp pre-commit.sh /Applications/Xcode.app/Contents/Developer/usr/share/git-core/hooks/pre-commit`
+
+# **Locally (local repo):**
+# - Create pre-commit.sh to local repo  
+# `cp pre-commit.sh .git/hooks/pre-commit`
+
 STASH_NAME="pre-commit-$(date +%s)"
 git stash save -q --keep-index $STASH_NAME
 
@@ -28,11 +47,11 @@ FAIL_MESSAGE="COMMIT REJECTED Found possible secret keys. Please remove them bef
 for expression in "${FORBIDDEN_EXP[@]}"
 do
     :
-    output=$(ls -p | grep -v '/$' | GREP_COLOR='4;5;37;41' xargs grep --color --with-filename -n -iE $expression)
+    output=$(ls -p | grep  -v '.lock\|package.json' | GREP_OPTIONS="--directories=skip" GREP_COLOR='4;5;37;41' xargs grep --color --with-filename -n -iE $expression)
 
     if [ $? -eq 0 ]
     then
-        ls -p | grep -v '/$' | GREP_COLOR='4;5;37;41' xargs grep --color --with-filename -n -iE $expression
+        ls -p | grep  -v '.lock\|package.json' | GREP_OPTIONS="--directories=skip" GREP_COLOR='4;5;37;41' xargs grep --color --with-filename -n -iE $expression
         echo '\n' $FAIL_MESSAGE '\n' && exit 1
     fi
 done
