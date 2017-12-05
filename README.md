@@ -20,6 +20,11 @@ Check top line of output, should be similar to:
 - Create pre-commit.sh to local repo  
 `cp pre-commit.sh .git/hooks/pre-commit`
 
+## Development
+Clone this repo, and make a pull request!
+
+To add a regex, just add it as a variable in pre-commit.sh and add the variable to the FORBIDDEN_EXP array.
+
 ## Features
 The script will scan for keys of the following format:
 
@@ -40,3 +45,6 @@ The script will scan for keys of the following format:
 | Foursquare | [0-9A-Z]{48} | [0-9A-Z]{48} |
 | LinkedIn | [0-9a-z]{12} | [0-9a-zA-Z]{16} |
 | Twitter | [0-9a-zA-Z]{18,25} | [0-9a-zA-Z]{35,44} |
+
+## Origins
+For a backstory on why this was created, see [How my Bitcoin was stolen - how to prevent it](https://baczuk.com/2017/12/04/how-i-had/)
