@@ -5,23 +5,17 @@ This tool will scan source files for possible API keys which could incur a secur
 ### MacOS:
 
 **Globally (all repos):**
-- Find global git directory:  
-`git config --list --show-origin`  
-Check top line of output, should be similar to:  
-`file:/Applications/Xcode.app/Contents/Developer/usr/share/git-core/gitconfig	credential.helper=osxkeychain`
-- Create a global git hooks directory:  
-`mkdir /Applications/Xcode.app/Contents/Developer/usr/share/git-core/hooks`
 - Configure a global git hooks path:  
-`git config --global core.hooksPath /Applications/Xcode.app/Contents/Developer/usr/share/git-core/hooks`
+`git config --global core.hooksPath /path/to/global/hooks`
 - Install api-key-hook file:  
-`cp pre-commit.sh /Applications/Xcode.app/Contents/Developer/usr/share/git-core/hooks/pre-commit`
+`cp /path/to/this/repo/pre-commit.sh /path/to/global/hooks/pre-commit`
 
 **Locally (local repo):**
 - Create pre-commit.sh to local repo  
 `cp pre-commit.sh .git/hooks/pre-commit`
 
 ## Development
-Clone this repo, and make a pull request!
+Fork this repo, and make a pull request!
 
 To add a regex, just add it as a variable in pre-commit.sh and add the variable to the FORBIDDEN_EXP array.
 
@@ -45,6 +39,3 @@ The script will scan for keys of the following format:
 | Foursquare | [0-9A-Z]{48} | [0-9A-Z]{48} |
 | LinkedIn | [0-9a-z]{12} | [0-9a-zA-Z]{16} |
 | Twitter | [0-9a-zA-Z]{18,25} | [0-9a-zA-Z]{35,44} |
-
-## Origins
-For a backstory on why this was created, see [How my Bitcoin was stolen - how to prevent it](https://baczuk.com/2017/12/04/how-i-had/)
